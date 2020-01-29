@@ -1,9 +1,6 @@
-body {
-  -webkit-font-smoothing: antialiased;
-}
-
-.reveal h2 {
-  font-size: 1.8em; }
+@import url("reveal.js/css/reveal.css");
+@import url("reveal.js/css/theme/beige.css");
+@import url("reveal.js/lib/css/zenburn.css");
 
 .reveal .slides {
   height: 100%;
@@ -36,28 +33,51 @@ body {
     height: auto;
     visibility: visible; }
 
-.reveal .slides section.present note {
+imgcredit {
+  text-align: left;
+  display: block;
+  font-size: 30% ! important;
+  color: #888;
+  transform: rotate(-90deg);
+  transform-origin: top left;
+  position: fixed;
+  padding-left: 50px;
+}
+
+imgcredit::before {
+  content: "Image credit: ";
+}
+
+@media print {
+imgcredit
+{
+  position: absolute;
+}
+}
+
+
+.reveal .slides section.present p note,
+.reveal .slides section.present note
+{
   position: fixed;
   bottom: 0px;
+  left: 0px;
   font-size: 60%;
   text-align: left;
   display: block;
 }
 
-html.dim .backgrounds {
-   -webkit-filter: saturate(.5) brightness(1.8);
-   -moz-filter: saturate(.5) brightness(1.8);
-   -o-filter: saturate(.5) brightness(1.8);
-   -ms-filter: saturate(.5) brightness(1.8);
-   filter: saturate(.5) brightness(1.8);
+@media print {
+.reveal .slides section.present p note,
+.reveal .slides section.present note {
+  position: absolute;
+  font-size: 40%;
+  text-align: left;
+  display: block;
 }
-
-html.blur .backgrounds {
-  -webkit-filter: blur(5px);
- -moz-filter: blur(10px);
- -o-filter: blur(5px);
- -ms-filter: blur(5px);
- filter: blur(5px);
+.reveal .slides section {
+  font-size: 90%!important;
+}
 }
 
 .ackimg {

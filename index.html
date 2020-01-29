@@ -105,6 +105,177 @@
   </table>
 </section>
 
+
+<section data-markdown><script type="text/template">
+## Hmmm, sounds like Git! Why not Git?
+
+<aside class="notes">
+- a datalad dataset IS a Git repository
+- introduce "no custom datastructures" principle
+</aside>
+</script>
+</section>
+
+<section data-markdown><script type="text/template">
+## But Git doesn't handle large files well!
+
+<aside class="notes">
+- git-annex
+- like git LFS, but better
+</aside>
+</script>
+</section>
+
+<section data-markdown><script type="text/template">
+## OK, so just Git+git-annex. Why DataLad?
+
+<aside class="notes">
+- there is more to data management than version control and transport
+- modularity
+- provenance
+- discoverability
+</aside>
+</script>
+</section>
+
+
+<section>
+<!-- on modularity -->
+<section data-markdown><script type="text/template">
+## I can do multiple repositories! How is your modularity better?
+
+<aside class="notes">
+- introduce submodules
+- show how a YODA dataset is assembled from subdatasets
+</aside>
+</script>
+</section>
+
+<section data-markdown><script type="text/template">
+## Gotcha! Just git-submodules, no DataLad needed!
+
+<aside class="notes">
+- show git limits: commit a change in a 3rd-level submodule
+- show annex limits: get file in a subdataset
+- reveal: datalad makes repo-boundaries vanish -- show save -r
+</aside>
+</script>
+</section>
+
+<section data-markdown><script type="text/template">
+## Modular data management
+
+<aside class="notes">
+- summary slide with few ideas
+- different data stewards
+- different hosting
+- different longevity
+- use points from "when to modularize"
+- circumwent Git limit: show HCP example (15M files, 80TB),
+  but feels like a single dataset
+</aside>
+</script>
+</section>
+</section>
+
+
+<section>
+<!-- on provenance capture -->
+<section data-markdown><script type="text/template">
+## Dear File, where are you from?
+
+<aside class="notes">
+- neither Git nor annex can tell us about data origin (only identity and location)
+- with the machinery to handle arbitrary dataset hierarchies we can capture
+  arbitrary changes
+- if we capture what caused the change, we can answer where data came from
+</aside>
+</script>
+</section>
+
+<section data-markdown><script type="text/template">
+## Love the command line!
+
+<aside class="notes">
+- just recording a cmdline can be enough
+- show simplest `run` invokation
+</aside>
+</script>
+</section>
+
+<section data-markdown><script type="text/template">
+## Environments are volatile. Containerize!
+
+<aside class="notes">
+- a container image is just a trackable file
+- show how `run` can use that
+- make connection to reproducibility
+</aside>
+</script>
+</section>
+
+<section data-markdown><script type="text/template">
+## Provenance capture
+
+<aside class="notes">
+- summary slide with few ideas
+- dead-simple approach, but very useful
+- near-comprehensive with containers
+- outlook: on demand-recompute (amends annex-get with a computational
+  alternative)
+</aside>
+</script>
+</section>
+</section>
+
+<section>
+<!-- on discoverability -->
+<section data-markdown><script type="text/template">
+## I know where these data are! They were just ...
+
+<aside class="notes">
+- search is a problem (what to describe)
+- discoverability is a bigger problem (how to describe)
+- THE metadata standard will never come
+</aside>
+</script>
+
+<section data-markdown><script type="text/template">
+## Metadata plurality
+
+<aside class="notes">
+- be able to: pick something that works now, and be able to transition
+  to something better
+- principle: programmatic (re-)extraction of metadata
+- datalad provides metadata transport
+</aside>
+</script>
+</section>
+</section>
+
+<section data-markdown><script type="text/template">
+## DataLad: Employ git/git-annex for decentralized data management
+
+<aside class="notes">
+- show "big picture" figure
+- claim data management demands of science map well onto datalad functionality
+- summarize remaining principles (obsoletion insurance, etc.)
+</aside>
+</script>
+</section>
+
+<section data-markdown><script type="text/template">
+## Handbook summary
+
+<aside class="notes">
+- what is in it?
+- how is it structured?
+- who and what is it aiming for?
+</aside>
+</script>
+</section>
+
+
 <section>
   <h2>Contact and more information</h2>
   <table>
