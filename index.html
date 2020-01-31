@@ -168,12 +168,21 @@
 <section data-markdown><script type="text/template">
 ## OK, so just Git+git-annex. Why DataLad?
 
-SLIDE on modularity
+- Because a **single repository is not enough**, and Git/Git-annex are not optimized
+  for such use cases
 
-CRITICAL different users, hosting, access permissions
+- **Why** are multiple repositories needed (in science)?
 
-- Git/Git-annex can achieve almost anything, but not necessarily
-  in an comprehensible or convenient way
+  - Size impacts I/O and logistics
+    - Git can struggle with 1M+ files or 100k+ commits
+    - Filesystems (licensing) can struggle with large numbers of inodes
+
+  - Target audience is different
+    - Public vs. private or personal vs. anonymized data
+  
+  - Pace of evolution or access patterns are different
+    - "Factual" raw data vs. choices of (pre-)processing
+    - Completed acquisition vs. ongoing study
 
 <aside class="notes">
 - there is more to data management than version control and transport
@@ -188,20 +197,31 @@ CRITICAL different users, hosting, access permissions
 <section>
 <!-- on modularity -->
 <section data-markdown><script type="text/template">
-## I can do multiple repositories! How is your modularity better?
+## Modular data management for collaboration
 
 ![](../pics/submodule_setup.svg)<!-- .element: height="500" -->
+
+- Typical workflow in science
+  - Prior works (algorithm development, empirical data, etc.) are combined
+    to produce novel results with to goal of a publication
+  - Aggregation across time and contributors
+  - Aiming for (but often failing) to be reproducible
+
 <aside class="notes">
+- Git combined with Git-annex can achieve almost anything, but not necessarily
+  in an comprehensible or convenient way
+
 - introduce submodules
 - show how a YODA dataset is assembled from subdatasets
 </aside>
 </script>
 </section>
 
+<!-- raw runtime ~4min at 1.5x speed -->
 <section data-markdown><script type="text/template">
-## Gotcha! Just git-submodules, no DataLad needed!?
+## Talk is cheap, show me the code: Git vs. DataLad
 
-<asciinema-player speed="2" cols="80" poster="npt:0" rows="24" src="asciicast/datalad_convenience_vs_git.json"></asciinema-player>
+<asciinema-player speed="1.5" cols="80" poster="npt:0" rows="24" src="asciicast/datalad_convenience_vs_git.json"></asciinema-player>
 
 
 <aside class="notes">
@@ -213,7 +233,9 @@ CRITICAL different users, hosting, access permissions
 </section>
 
 <section data-markdown><script type="text/template">
-## Modular data management
+## Modular data management...
+
+![](pics/decentralized_publishing.png)
 
 <aside class="notes">
 - summary slide with few ideas
@@ -221,9 +243,20 @@ CRITICAL different users, hosting, access permissions
 - different hosting
 - different longevity
 - use points from "when to modularize"
-- circumwent Git limit: show HCP example (15M files, 80TB),
-  but feels like a single dataset
 - applicability to CI setups in dev context
+</aside>
+</script>
+</section>
+
+<section data-markdown><script type="text/template">
+## ... that scales
+
+![](../pics/hcp_github.png)<!-- .element: height="800" style="margin-top:-30px;margin-bottom:-30px" -->
+
+15M files, 80TB, distributed across ~4500 datasets: feels like a monorepo from GitHub (but data and N-1 datasets live elsewhere)
+
+<aside class="notes">
+- circumwent Git limit: show HCP example (15M files, 80TB),
 </aside>
 </script>
 </section>
@@ -244,26 +277,71 @@ CRITICAL different users, hosting, access permissions
 </script>
 </section>
 
-<section data-markdown><script type="text/template">
-## Love the command line!
+<section>
+  <h2>Simplistic provenance capture</h2>
+  <img style="margin:-20px" data-src="pics/dataset_linkage_provenance.png">
+<pre><code class="bash" style="max-height:none">$ datalad run -m "Perform eye movement event detection"\
+  --input 'raw_data/*.tsv.gz' --output 'sub-*' \
+  bash code/compute_all.sh
 
+-- Git commit -- Michael Hanke &lt;michael.hanke@gmail.com&gt;; Fri Sep 21 22:00:47 2019
+    [DATALAD RUNCMD] Perform eye movement event detection
+    === Do not change lines below ===
+    {
+     "cmd": "bash code/compute_all.sh",
+     "dsid": "d2b4b72a-7c13-11e7-9f1f-a0369f7c647e",
+     "exit": 0,
+     "inputs": ["raw_data/*.tsv.gz"],
+     "outputs": ["sub-*"],
+     "pwd": "."
+    }
+    ^^^ Do not change lines above ^^^
+---
+ sub-01/sub-01_task-movie_run-1_events.png | 2 +-
+ sub-01/sub-01_task-movie_run-1_events.tsv | 2 +-
+...
+</code></pre>
 <aside class="notes">
 - just recording a cmdline can be enough
 - show simplest `run` invokation
 </aside>
-</script>
 </section>
 
-<section data-markdown><script type="text/template">
-## Environments are volatile. Containerize!
+<section>
+  <h2>Comprehensive provenance capture: containerize!</h2>
+  <img style="margin:-20px;height:250px" data-src="pics/dataset_linkage_provenance.png">
+<pre><code class="bash" style="max-height:none">$ datalad containers-run -n nilearn \
+  --input 'mri/*_bold.nii --output 'sub-*/LC_timeseries_run-*.csv' \
+  "bash -c 'for sub in sub-*; do for run in run-1 ... run-8;
+     do python3 code/extract_lc_timeseries.py \$sub \$run; done; done'"
 
+-- Git commit -- Michael Hanke &lt;michael.hanke@gmail.com&gt;; Fri Jul 6 11:02:28 2019
+    [DATALAD RUNCMD] singularity exec --bind {pwd} .datalad/e...
+    === Do not change lines below ===
+    {
+     "cmd": "singularity exec --bind {pwd} .datalad/environments/nilearn.simg bash..",
+     "dsid": "92ea1faa-632a-11e8-af29-a0369f7c647e",
+     "exit": 0,
+     "inputs": [
+      "mri/*.bold.nii.gz",
+      ".datalad/environments/nilearn.simg"
+     ],
+     "outputs": ["sub-*/LC_timeseries_run-*.csv"],
+     "pwd": "."
+    }
+    ^^^ Do not change lines above ^^^
+---
+ sub-01/LC_timeseries_run-1.csv | 1 +
+ sub-01/LC_timeseries_run-2.csv | 1 +
+...
+</code></pre>
 <aside class="notes">
 - a container image is just a trackable file
 - show how `run` can use that
 - make connection to reproducibility
 </aside>
-</script>
 </section>
+
 
 <section data-markdown><script type="text/template">
 ## Provenance capture
@@ -292,8 +370,19 @@ CRITICAL different users, hosting, access permissions
 </script>
 </section>
 
+
 <section data-markdown><script type="text/template">
-## Metadata plurality
+## Scalable and Actionable (meta)data representations
+![](pics/metadata.png)
+- (meta)data logistics solution with **built-in provenance capture**
+
+- automatic **metadata updates** to track evolution of standards
+
+- integrates well with storage/hosting technology
+
+- facilitates building metadata-driven applications 
+
+- viable system to **bring computation to data**
 
 <aside class="notes">
 - be able to: pick something that works now, and be able to transition
@@ -308,11 +397,6 @@ CRITICAL different users, hosting, access permissions
 <section data-markdown><script type="text/template">
 ## DataLad: Employ git/git-annex for decentralized data management
 
-<aside class="notes">
-- show "big picture" figure
-- claim data management demands of science map well onto datalad functionality
-- summarize remaining principles (obsoletion insurance, etc.)
-</aside>
 </script>
 </section>
 
@@ -366,6 +450,9 @@ CRITICAL different users, hosting, access permissions
 - what is in it?
 - how is it structured?
 - who and what is it aiming for?
+- show "big picture" figure
+- claim data management demands of science map well onto datalad functionality
+- summarize remaining principles (obsoletion insurance, etc.)
 </aside>
 </script>
 </section>
