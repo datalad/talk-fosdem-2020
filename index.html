@@ -111,6 +111,24 @@
 <section data-markdown><script type="text/template">
 ## Hmmm, sounds like Git! Why not Git?
 
+- A DataLad *dataset* **is** a Git repository!
+
+- Principles
+
+  - There are only two things in the world: **datasets** and **files**.
+    Content and domain agnostic, just like Git.
+
+        GIT(1)                  Git Manual                       GIT(1)
+
+        NAME
+              git - the stupid content tracker
+
+  - Minimization of custom procedures and data structures.
+
+    **Users must not loose data or data access**, if DataLad would vanish.
+
+  - **Uncompromised decentralization**, no required central server or service.
+
 <aside class="notes">
 - a datalad dataset IS a Git repository
 - introduce "no custom datastructures" principle
@@ -120,6 +138,25 @@
 
 <section data-markdown><script type="text/template">
 ## But Git doesn't handle large files well!
+
+- A dataset can have an optional **annex** for (large) file content tracking.
+
+- For **annex'ed** files, identity (hash) and location information is put into Git,
+  rather than their content.
+
+- The annex, and transport to and from it is managed with **git-annex**
+  [git-annex.branchable.com](https://git-annex.branchable.com).
+
+- **Git-annex is superior to Git-LFS**
+
+  - supports *distributed, heterogenous storage*
+
+  - *partial checkouts* are a core mode of operation
+
+  - interfaces majority of 3rd-party storage solutions (incl. Git-LFS),
+    *no required dedicated server support*
+
+- **DataLad makes git-annex transparent** for many standard workflows
 
 <aside class="notes">
 - git-annex
