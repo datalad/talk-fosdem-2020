@@ -109,6 +109,29 @@
 
 
 <section data-markdown><script type="text/template">
+## DataLad
+
+- joint management of the data/code and their life cycle
+
+  - version control
+
+  - transport logistics
+
+- free and open source software (MIT licence)
+
+- Python API and command line interface
+
+</script>
+<aside class="notes">
+  - modular management
+  - data provenance 
+  - discoverabil
+</aside>
+</section>
+
+
+
+<section data-markdown><script type="text/template">
 ## Hmmm, sounds like Git! Why not Git?
 
 - A DataLad *dataset* **is** a Git repository!
@@ -187,8 +210,9 @@
 <aside class="notes">
 - there is more to data management than version control and transport
 - modularity
-- provenance
-- discoverability
+- different data stewards
+- different hosting
+- different longevity
 </aside>
 </script>
 </section>
@@ -233,16 +257,15 @@
 </section>
 
 <section data-markdown><script type="text/template">
-## Modular data management...
+## Modular data (dependency) management...
 
-![](pics/decentralized_publishing.png)
+![](pics/decentralized_publishing.png)<!-- .element: height="800" style="margin-top:-10px;margin-bottom:-50px" -->
+
+- Each unit is an unimpaired Git/Git-annex repository.
+- Avoid special interest pollution of "main" repos (CI, demos, ...)
 
 <aside class="notes">
 - summary slide with few ideas
-- different data stewards
-- different hosting
-- different longevity
-- use points from "when to modularize"
 - applicability to CI setups in dev context
 </aside>
 </script>
@@ -268,11 +291,26 @@
 <section data-markdown><script type="text/template">
 ## Dear File, where are you from?
 
+![](pics/w3cprov.png)<!-- .element: height="400" style="margin-top:-10px;margin-bottom:-30px" -->
+
+- How data came to be is often crucial information for **reproducibility and auditability**
+
+- Version control system typically do not capture this aspect
+
+- DataLad can **capture arbitrary transformations** of any given directory tree
+  and provides mean to **record the cause** of such a change
+
+- Enabled computational re-computation for **verification** or as **alternative to
+  storage** and transport
+
 <aside class="notes">
 - neither Git nor annex can tell us about data origin (only identity and location)
 - with the machinery to handle arbitrary dataset hierarchies we can capture
   arbitrary changes
 - if we capture what caused the change, we can answer where data came from
+- dead-simple approach, but very useful
+- outlook: on demand-recompute (amends annex-get with a computational
+  alternative)
 </aside>
 </script>
 </section>
@@ -301,6 +339,9 @@
  sub-01/sub-01_task-movie_run-1_events.tsv | 2 +-
 ...
 </code></pre>
+
+Capture changes caused by any command line execution
+
 <aside class="notes">
 - just recording a cmdline can be enough
 - show simplest `run` invokation
@@ -321,39 +362,27 @@
     {
      "cmd": "singularity exec --bind {pwd} .datalad/environments/nilearn.simg bash..",
      "dsid": "92ea1faa-632a-11e8-af29-a0369f7c647e",
-     "exit": 0,
      "inputs": [
       "mri/*.bold.nii.gz",
       ".datalad/environments/nilearn.simg"
      ],
      "outputs": ["sub-*/LC_timeseries_run-*.csv"],
-     "pwd": "."
+     ...
     }
     ^^^ Do not change lines above ^^^
 ---
  sub-01/LC_timeseries_run-1.csv | 1 +
- sub-01/LC_timeseries_run-2.csv | 1 +
 ...
 </code></pre>
+Reproducible execution automatically implies complete capture
+
 <aside class="notes">
+- datalad extension
 - a container image is just a trackable file
 - show how `run` can use that
 - make connection to reproducibility
-</aside>
-</section>
-
-
-<section data-markdown><script type="text/template">
-## Provenance capture
-
-<aside class="notes">
-- summary slide with few ideas
-- dead-simple approach, but very useful
 - near-comprehensive with containers
-- outlook: on demand-recompute (amends annex-get with a computational
-  alternative)
 </aside>
-</script>
 </section>
 </section>
 
@@ -361,6 +390,14 @@
 <!-- on discoverability -->
 <section data-markdown><script type="text/template">
 ## I know where these data are! They were just ...
+
+- Growing collections of data make locating data of interest a challenge
+
+- A filename is quickly not sufficient or unique enough
+
+- Finding data that is known to exist is already a challenge
+
+- Discovering data that may exists is a much harder challenge
 
 <aside class="notes">
 - search is a problem (what to describe)
@@ -373,7 +410,7 @@
 
 <section data-markdown><script type="text/template">
 ## Scalable and Actionable (meta)data representations
-![](pics/metadata.png)
+![](pics/metadata.png)<!-- .element: height="400" style="margin-top:-10px;margin-bottom:-30px" -->
 - (meta)data logistics solution with **built-in provenance capture**
 
 - automatic **metadata updates** to track evolution of standards
@@ -397,6 +434,19 @@
 <section data-markdown><script type="text/template">
 ## DataLad: Employ git/git-annex for decentralized data management
 
+- **Convenience without constraints** (everything is still just Git/Git-annex)
+
+- Utility for provenance capture and discoverability
+
+- There is more:
+
+  - Data publication (DropBox, Google, IPFS, FigShare, ...)
+
+  - DataLad extensions (3rd-party add-on packages)
+
+  - Workflows for HPC/HTC
+
+  - ...
 </script>
 </section>
 
